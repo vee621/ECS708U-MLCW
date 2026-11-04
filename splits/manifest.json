@@ -1,0 +1,131 @@
+{
+  "dataset": "Fashion-MNIST",
+  "input_shape": [
+    28,
+    28,
+    1
+  ],
+  "classes": 10,
+  "official_train_size": 60000,
+  "official_test_size": 10000,
+  "seed": 708,
+  "sampling_seeds": {
+    "partition": 708,
+    "fit_train": 709,
+    "cluster_train": 710,
+    "cluster_validation": 711,
+    "cluster_test": 712
+  },
+  "index_file": "splits/indices.npz",
+  "namespace": {
+    "train": "official train IDX",
+    "validation": "official train IDX",
+    "fit_train": "official train IDX",
+    "cluster_train": "official train IDX",
+    "cluster_validation": "official train IDX",
+    "cluster_test": "official test IDX"
+  },
+  "label_sha256": {
+    "official_train": "657fbd221bfc9f4198cc14b5619cc33ec57c58dd0e47af4d99d6650759e869a7",
+    "official_test": "3d0e6c6ea990b53b6f8f500a41cac93881d981b315f84578b7d915342ade01e9"
+  },
+  "indices": {
+    "train": {
+      "count": 50000,
+      "sha256": "bb8200b5b74bbd570ebe37957108e4bcc6df776622ca14b2ff30b7c50b6167bc",
+      "class_counts": [
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000
+      ]
+    },
+    "validation": {
+      "count": 10000,
+      "sha256": "aff62024248b9a98d57c907826ba3c381b74ba86c590300a45429063fd3bc0f6",
+      "class_counts": [
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000
+      ]
+    },
+    "fit_train": {
+      "count": 10000,
+      "sha256": "be086e107d3fb1799dd568fdddb0cd961b9b54f39cd0205f632986d21dca99b9",
+      "class_counts": [
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000
+      ]
+    },
+    "cluster_train": {
+      "count": 3000,
+      "sha256": "aa07b3ca26e05bc3258e59975f724986da131116818f939a84a1bafcd16e520d",
+      "class_counts": [
+        300,
+        300,
+        300,
+        300,
+        300,
+        300,
+        300,
+        300,
+        300,
+        300
+      ]
+    },
+    "cluster_validation": {
+      "count": 1000,
+      "sha256": "dc72e637897c8c0cfcaeb6080073bfb410be4f25fb2f6bb99592d81a71656317",
+      "class_counts": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ]
+    },
+    "cluster_test": {
+      "count": 1000,
+      "sha256": "3b652f9f421df19974a3685d68fe5f0e9badd29ce5945998743a9bfad8644fed",
+      "class_counts": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ]
+    }
+  },
+  "test_policy": "No test pixels or test metrics before final evaluation; test labels used solely for fixed 1k stratified index selection."
+}

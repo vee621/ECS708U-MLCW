@@ -1,0 +1,62 @@
+{
+  "experiment_id": "cpu-smoke",
+  "config": {
+    "experiment_id": "cpu-smoke",
+    "dataset": "Fashion-MNIST",
+    "split_seed": 708,
+    "model_seed": 708,
+    "training_partition": "fit_train",
+    "evaluation_partition": "validation",
+    "representation": "avgpool2x2",
+    "model": "SGDClassifier(loss=log_loss)",
+    "max_iter": 5,
+    "tol": 0.001,
+    "test_images_permitted": false
+  },
+  "hardware": {
+    "host": "runnervm48cm3",
+    "system": "Linux-7.0.0-1017-azure-x86_64-with-glibc2.39",
+    "cpu": "x86_64",
+    "logical_cpu_count": 4,
+    "python": "3.11.17",
+    "numpy": "2.3.5",
+    "scikit_learn": "1.8.0",
+    "accelerator": "CPU only (this smoke experiment)"
+  },
+  "seed": 708,
+  "partition": {
+    "fit_train": 10000,
+    "validation": 10000
+  },
+  "runtime_seconds": {
+    "extraction_fit_train": 0.054072,
+    "extraction_validation": 0.053296,
+    "training": 0.163128,
+    "inference_validation": 0.002022
+  },
+  "feature_cache": {
+    "fit_train": {
+      "path": "/home/runner/work/ECS708U-MLCW/ECS708U-MLCW/data/features/avgpool2x2-fit_train-8626508199b124eeece0.npy",
+      "cache_hit": false,
+      "elapsed_seconds": 0.054072,
+      "feature_shape": [
+        10000,
+        196
+      ],
+      "signature": "8626508199b124eeece0"
+    },
+    "validation": {
+      "path": "/home/runner/work/ECS708U-MLCW/ECS708U-MLCW/data/features/avgpool2x2-validation-4b1d7a2c2c3d9d3d2ea2.npy",
+      "cache_hit": false,
+      "elapsed_seconds": 0.053296,
+      "feature_shape": [
+        10000,
+        196
+      ],
+      "signature": "4b1d7a2c2c3d9d3d2ea2"
+    }
+  },
+  "validation_accuracy": 0.7776,
+  "test_evaluated": false,
+  "note": "Extraction durations include cache read when cache_hit=true; no test images used."
+}
