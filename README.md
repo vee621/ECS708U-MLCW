@@ -1,114 +1,44 @@
-# ECS708U-MLCW — Fashion-MNIST reproducible setup
+# ECS708U-MLCW
 
-Setup for sections **0.1–0.3**: fixed stratified Fashion-MNIST partitions,
-CPU-friendly fitting subset, shared clustering/feature-extraction subsets,
-versioned feature caching, and a small runnable CPU validation-only smoke test.
+Fashion-MNIST work for ECS708U. The images are 28×28 greyscale and have 10 clothing classes.
 
-## Dataset and frozen indices
+The data is from [Zalando's Fashion-MNIST repo](https://github.com/zalandoresearch/fashion-mnist#get-the-data). It has 60,000 training images and 10,000 test images. The four original `.gz` files are in `data/raw/`. Checksums are saved in `data/source_manifest.json`.
 
-[Fashion-MNIST](https://github.com/zalandoresearch/fashion-mnist): 28×28 greyscale
-images, 10 classes: T-shirt/top, Trouser, Pullover, Dress, Coat, Sandal, Shirt,
-Sneaker, Bag, Ankle boot. The official data has 60,000 train and 10,000 test
-images. The four official compressed IDX archives are checksum-verified and committed
-under `data/raw/`; only derived feature caches are ignored. Only labels are read when constructing splits;
-class IDs are **never passed** to distance calculations, centroids, cluster
-assignments, or the feature extractor.
+## Run
 
-| Named index | Count | Original index namespace | Purpose |
-| --- | ---: | --- | --- |
-| `train` | 50,000 | Official train | Primary fitting partition |
-| `validation` | 10,000 | Official train | Model selection and reporting |
-| `fit_train` | 10,000 | Official train | Optional fixed CPU-friendly subset of `train` |
-| `cluster_train` | 3,000 | Official train | Fixed subset of `fit_train` for all representations |
-| `cluster_validation` | 1,000 | Official train | Fixed subset of `validation` for all representations |
-| `cluster_test` | 1,000 | Official test | Preselected test indices for **final evaluation only** |
-
-All subsets use deterministic `StratifiedShuffleSplit` with base seed **708**.
-Offsets +1 to +4 generate the four nested subsets. The original official test
-set remains held out; the setup reads *test labels* only to choose the fixed
-stratified 1,000 test indices, not test pixels. The smoke run accesses **no**
-test pixels or test metrics. Full official test evaluation must happen only
-once, after model selection. Never use `cluster_test` to tune models.
-
-The frozen `splits/indices.npz` and `splits/manifest.json` have already been
-generated from the original labels, verified and committed before experiments. The manifest includes exact
-seeds, source label hashes, index hashes, sizes, and class counts. Rerunning
-the generator does not resample the data. Changed splits are rejected unless
-explicitly forced. `python scripts/verify_splits.py` checks for leakage and
-class-proportion drift without reading any images.
-
-## Install and run (CPU, no paid service)
-
-Use Python 3.10+ with a virtual environment. Pinned dependencies are in
-`requirements.txt`. Run on your own CPU, Google Colab, or **QMUL Teaching
-Hub → School of EECS → Deep Learning and Computer Vision** via
-https://hub.comp-teach.qmul.ac.uk/hub/user/ . No GPU is required.
+Use Python 3.10+ (CPU is fine).
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # Windows PowerShell: .venv\\Scripts\\Activate.ps1
 python -m pip install -r requirements.txt
-python scripts/prepare_data.py    # verify existing frozen indices; no resampling
-python scripts/verify_splits.py   # validate seed, disjointness, proportions
-python scripts/smoke_run.py       # fits on original train pixels; NO test images
+python scripts/download_official_data.py --verify-only
+python scripts/verify_splits.py
+python scripts/smoke_run.py
 python -m pytest -q
 ```
 
-Or run `bash scripts/run_cpu_smoke.sh` on Linux/macOS/Teaching Hub. The original image and label archives are included in the Git checkout, so
-no network access is needed to fetch data. The training smoke run only reads
-training-set pixels and never opens test images. Never modify the indices after inspecting validation results.
+The split files are already included, so you don't need to make them again. If they're missing, run `python scripts/prepare_data.py` before doing any experiments. Don't change the splits after looking at results.
 
-## Hardware, timings, feature extraction
+## Data splits
 
-The `cpu-smoke` experiment (`configs/cpu-smoke.json`) uses a CPU-only
-`SGDClassifier` on the fixed 10,000-image fit partition, evaluates on the
-same 10,000-image validation partition, and **never evaluates test**. This is
-only an infrastructure check, not a claimed coursework result.
+The split seed is **708**. Indices are saved in `splits/indices.npz` and details (seeds, checksums and class counts) are in `splits/manifest.json`.
 
-It extracts label-free 14×14 average-pooled pixels and caches arrays in
-`data/features/`. Cache identity includes the representation, parameters,
-source indices and **pixel bytes**. Cache hits avoid recomputing features.
-It writes `results/cpu-smoke.json` with measured training, feature-extraction,
-and validation inference times, cache status, Python/package versions and
-hardware/CPU information. Timings depend on the actual machine; the initial run in GitHub Actions is recorded in `results/cpu-smoke.json`.
-Those measurements reflect the GitHub Actions CPU, not your own machine. For future experiments,
-record timings separately for each experiment ID and distinguish extraction
-on cache hit from first-time extraction. Record whether hardware was QMUL
-Teaching Hub, Google Colab CPU, or personal computer in the results note.
+| Split | Images | Where they come from |
+| --- | ---: | --- |
+| train | 50,000 | original training set |
+| validation | 10,000 | original training set |
+| fit_train | 10,000 | smaller training subset for CPU runs |
+| cluster_train | 3,000 | from fit_train |
+| cluster_validation | 1,000 | from validation |
+| cluster_test | 1,000 | original test set; final evaluation only |
 
-## Repo layout
+Sampling is stratified. Labels are used to select the indices, not for clustering distances or assignments. Use the same cluster subsets when comparing features. Test images should only be used for the final evaluation.
 
-```text
-.
-├── README.md                 # these instructions
-├── requirements.txt          # pinned dependencies
-├── configs/                  # config per experiment ID
-├── splits/                   # tracked frozen indices + seed manifest
-├── src/                      # validated data, split, feature cache, hardware code
-├── scripts/                  # prepare, verify, smoke benchmark, shell runner
-├── tests/                    # offline reproducibility/leakage/cache tests
-├── results/                  # JSON experiment register and timing logs
-├── figures/                  # tracked notebook figures plus provenance
-└── data/                     # tracked official IDX + provenance, ignored feature cache
-```
+## Files
 
-The clustering comparisons must use `cluster_train` / `cluster_validation` /
-`cluster_test` **identically for every representation**. Labels are allowed
-for fixed stratification and *post hoc evaluation* only, never in feature
-extraction, distances, centroid fitting, or cluster assignment. Test subset
-images are reserved until the final evaluation stage.
+- `src/` — dataset loading, splits and feature caching
+- `scripts/` — data checks, split generation and a small CPU run
+- `configs/cpu-smoke.json` — settings for the example run
+- `results/cpu-smoke.json` — validation accuracy, hardware and timing from the GitHub Actions CPU run
+- `tests/` — basic split and cache checks
 
-## Verified original data in the repository
-
-The canonical four archives are sourced from Zalando's [Get the Data](https://github.com/zalandoresearch/fashion-mnist#get-the-data) release, not generated synthetic images. A GitHub Actions workflow (`.github/workflows/pin-fashion-mnist.yml`) downloads all four files, checks the upstream MD5 values, records SHA-256 digests in `data/source_manifest.json`, generates the immutable split indices, tests them, and runs a real CPU smoke benchmark. It commits the original compressed IDX files under `data/raw/` together with `splits/indices.npz`, `splits/manifest.json`, and `results/cpu-smoke.json`. The archives are approximately 31 MB compressed total; derived feature caches are not committed.
-
-To download and verify on your own machine, use:
-
-```bash
-python scripts/download_official_data.py
-python scripts/prepare_data.py
-python scripts/verify_splits.py
-python scripts/smoke_run.py
-```
-
-Existing generated splits are not overwritten if their contents differ. The full official **test images are never decoded or evaluated** in this preparation workflow; only archive checksums and the IDX header are checked. Test labels are used to choose the fixed 1,000-image holdout subset, but never used to fit or select a model.
+`scripts/smoke_run.py` trains a small SGD model using `fit_train` and checks it on validation only. It stores extracted features under `data/features/` so they can be reused. The recorded times are from the GitHub runner, not from a personal laptop.

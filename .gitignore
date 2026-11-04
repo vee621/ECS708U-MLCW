@@ -1,17 +1,12 @@
-# Official compressed Fashion-MNIST IDX archives in data/raw/ and
-# data/source_manifest.json are intentionally VERSIONED (real source data).
-# Derived feature caches and incomplete downloads remain local.
+# Local files
 data/features/
 data/raw/.download-*
 data/raw/*.part
 data/raw/*.tmp
-# Python and local environments
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
 venv/
-.DS_Store
-# Notebook runtime debris
 .ipynb_checkpoints/
-# Frozen splits and results are intentionally versioned.
+.DS_Store
