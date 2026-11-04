@@ -1,0 +1,13 @@
+{
+  "experiment_id": "cpu-smoke",
+  "dataset": "Fashion-MNIST",
+  "split_seed": 708,
+  "model_seed": 708,
+  "training_partition": "fit_train",
+  "evaluation_partition": "validation",
+  "representation": "avgpool2x2",
+  "model": "SGDClassifier(loss=log_loss)",
+  "max_iter": 5,
+  "tol": 0.001,
+  "test_images_permitted": false
+}

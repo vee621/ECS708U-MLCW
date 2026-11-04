@@ -1,0 +1,13 @@
+# Downloaded original data (verify checksums, never commit raw images)
+data/
+# Python and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.DS_Store
+# Notebook runtime debris
+.ipynb_checkpoints/
+# Note: splits/*.npz and splits/manifest.json are INTENTIONALLY trackable.
+# Note: results/*.json are INTENTIONALLY trackable for provenance.
