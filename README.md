@@ -98,3 +98,18 @@ The clustering comparisons must use `cluster_train` / `cluster_validation` /
 for fixed stratification and *post hoc evaluation* only, never in feature
 extraction, distances, centroid fitting, or cluster assignment. Test subset
 images are reserved until the final evaluation stage.
+
+## Verified original data in the repository
+
+The canonical four archives are sourced from Zalando's [Get the Data](https://github.com/zalandoresearch/fashion-mnist#get-the-data) release, not generated synthetic images. A GitHub Actions workflow (`.github/workflows/pin-fashion-mnist.yml`) downloads all four files, checks the upstream MD5 values, records SHA-256 digests in `data/source_manifest.json`, generates the immutable split indices, tests them, and runs a real CPU smoke benchmark. It commits the original compressed IDX files under `data/raw/` together with `splits/indices.npz`, `splits/manifest.json`, and `results/cpu-smoke.json`. The archives are approximately 31 MB compressed total; derived feature caches are not committed.
+
+To download and verify on your own machine, use:
+
+```bash
+python scripts/download_official_data.py
+python scripts/prepare_data.py
+python scripts/verify_splits.py
+python scripts/smoke_run.py
+```
+
+Existing generated splits are not overwritten if their contents differ. The full official **test images are never decoded or evaluated** in this preparation workflow; only archive checksums and the IDX header are checked. Test labels are used to choose the fixed 1,000-image holdout subset, but never used to fit or select a model.
