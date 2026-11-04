@@ -2,7 +2,7 @@
 
 Source: [Zalando Research — Get the Data](https://github.com/zalandoresearch/fashion-mnist#get-the-data).
 
-`.github/workflows/pin-fashion-mnist.yml` downloads and commits all four **unaltered** official compressed IDX archives under `data/raw/`, after checking their published MD5 digests. `data/source_manifest.json` records the actual archive SHA-256 digests, byte counts, image headers and source.
+All four **unaltered** official compressed IDX archives are committed under `data/raw/`. They were downloaded and MD5-verified by `.github/workflows/pin-fashion-mnist.yml`. `data/source_manifest.json` records the actual archive SHA-256 digests, byte counts, image headers and source.
 
 To independently verify the committed data without downloading anything:
 
