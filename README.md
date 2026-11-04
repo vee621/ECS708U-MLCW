@@ -6,7 +6,7 @@ The data is from [Zalando's Fashion-MNIST repo](https://github.com/zalandoresear
 
 ## Run
 
-Use Python 3.10+ (CPU is fine).
+Use Python 3.11+ (CPU is fine).
 
 ```bash
 python -m pip install -r requirements.txt
