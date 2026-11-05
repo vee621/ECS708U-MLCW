@@ -13,6 +13,7 @@ python -m pip install -r requirements.txt
 python scripts/download_official_data.py --verify-only
 python scripts/verify_splits.py
 python scripts/smoke_run.py
+python notebooks/part0_part1.py
 python -m pytest -q
 ```
 
