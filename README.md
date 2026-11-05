@@ -13,9 +13,10 @@ python -m pip install -r requirements.txt
 python scripts/download_official_data.py --verify-only
 python scripts/verify_splits.py
 python scripts/smoke_run.py
-python notebooks/part0_part1.py
 python -m pytest -q
 ```
+
+Open `notebooks/part0_part1.ipynb` in Jupyter and run all cells.
 
 The split files are already included, so you don't need to make them again. If they're missing, run `python scripts/prepare_data.py` before doing any experiments. Don't change the splits after looking at results.
 
